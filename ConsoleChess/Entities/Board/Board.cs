@@ -10,7 +10,13 @@
     {
         Lines = lines;
         Columns = columns;
-        Pieces = new Piece[Lines,Columns];
+        Pieces = new Piece[Lines, Columns];
+    }
+
+    public void AddPiece(Piece p, Position pos)
+    {
+        Pieces[pos.Line, pos.Column] = p;
+        p.Position = pos;
     }
 }
 
