@@ -1,24 +1,24 @@
 ﻿class ChessPosition
 {
     public char Column { get; set; }
-    public int Line { get; set; }
+    public int Row { get; set; }
 
     public ChessPosition() { }
 
-    public ChessPosition(char column, int line)
+    public ChessPosition(char column, int row)
     {
         Column = column;
-        Line = line;
+        Row = row;
     }
 
     public Position ToPosition()
     {
-        return new Position(8 - Line, Column - 'a');
+        return new Position(8 - Row, Column - 'a');
     }
 
     public override string ToString()
     {
-        return "" + Line
+        return "" + Row
                   + Column;
     }
 }

@@ -15,5 +15,10 @@
         Moves = 0;
     }
 
+    public void AddMoves()
+    {
+        Moves++;
+    }
+
 }
 

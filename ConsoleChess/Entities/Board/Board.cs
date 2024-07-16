@@ -1,16 +1,16 @@
 ﻿class Board
 {
-    public int Lines { get; set; }
+    public int Rows { get; set; }
     public int Columns { get; set; }
     public Piece[,] Pieces { get; protected set; }
 
     public Board() { }
 
-    public Board(int lines, int columns)
+    public Board(int rows, int columns)
     {
-        Lines = lines;
+        Rows = rows;
         Columns = columns;
-        Pieces = new Piece[Lines, Columns];
+        Pieces = new Piece[Rows, Columns];
     }
     
     public bool PieceExists (Position pos)
@@ -23,13 +23,25 @@
     {
         if (PieceExists(pos)) 
             throw new BoardException("Already exists a piece in this position!");
-        Pieces[pos.Line, pos.Column] = p;
+        Pieces[pos.Row, pos.Column] = p;
         p.Position = pos;
+    }
+
+    public Piece RemovePiece(Position pos)
+    {
+        if (!PieceExists(pos))
+        {
+            return null;
+        }
+        Piece temp = piece(pos);
+        temp.Position = null;
+        Pieces[pos.Row,pos.Column] = null;
+        return temp;
     }
 
     private bool ValidPosition(Position pos)
     {
-        if (pos.Line<0 || pos.Line>=Lines || pos.Column<0 || pos.Column>=Columns) return false;
+        if (pos.Row<0 || pos.Row>=Rows || pos.Column<0 || pos.Column>=Columns) return false;
         return true;
     }
 
@@ -40,7 +52,7 @@
     }
 
 
-    public Piece piece (Position pos) { return Pieces[pos.Line, pos.Column]; }
+    public Piece piece (Position pos) { return Pieces[pos.Row, pos.Column]; }
 
 }
 

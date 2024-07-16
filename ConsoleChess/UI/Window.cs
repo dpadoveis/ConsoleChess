@@ -5,10 +5,10 @@
         ConsoleColor originalBackgroundColor = Console.BackgroundColor;
         ConsoleColor originalForegroundColor = Console.ForegroundColor;
 
-        for (int i = 0; i < b.Lines; i++)
+        for (int i = 0; i < b.Rows; i++)
         {
             Console.Write(8 - i + " ");
-            for (int j = 0; j < b.Lines; j++)
+            for (int j = 0; j < b.Rows; j++)
             {               
                 if ((i + j) % 2 == 0)
                 {
@@ -51,6 +51,13 @@
         Console.ForegroundColor = originalForegroundColor;
     }
 
+    public static ChessPosition ReadChessPosition()
+    {
+        string s = Console.ReadLine();
+        char column = s[0];
+        int row = int.Parse(s[1] + "");
+        return new ChessPosition(column, row);
+    }
     public static void PrintPiece(Piece piece)
     {
         if (piece.Color == Color.Black)

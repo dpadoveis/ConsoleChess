@@ -1,14 +1,22 @@
 ﻿try
 {
-    Board board = new Board(8, 8);
+    ChessMatch chessMatch = new ChessMatch();
 
-    board.AddPiece(new Tower(Color.Black, board), new Position(0, 0));
-    board.AddPiece(new Tower(Color.Black, board), new Position(1, 3));
-    board.AddPiece(new King(Color.Black, board), new Position(0, 2));
+    while (!chessMatch.Finished)
+    {
+        Console.Clear();
+        Window.PrintBoard(chessMatch.Board);
 
-    board.AddPiece(new Tower(Color.White, board), new Position(3, 5));
+        Console.WriteLine();
+        Console.Write("Origin:");
+        Position origin = Window.ReadChessPosition()
+            .ToPosition();
+        Console.Write("Destination:");
+        Position destination = Window.ReadChessPosition()
+            .ToPosition();
+        chessMatch.MakeMove(origin, destination);
+    }
 
-    Window.PrintBoard(board);
 
 }
 catch (BoardException e)
