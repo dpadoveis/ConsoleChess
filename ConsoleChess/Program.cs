@@ -2,27 +2,39 @@
 {
     ChessMatch chessmatch = new ChessMatch();
 
-    while (!chessmatch.terminada)
+    while (!chessmatch.Finished)
     {
+        try {
+            Console.Clear();
+            Window.PrintBoard(chessmatch.Board);
+            Console.WriteLine();
+            Console.WriteLine("Turn n° " + chessmatch.Turn);
+            Console.WriteLine($"{chessmatch.CurrentPlayer}'s turn to move");
 
-        Console.Clear();
-        Window.PrintBoard(chessmatch.Board);
+            Console.WriteLine();
+            Console.Write("Origin: ");
+            Position origin = Window.ReadChessPosition().ToPosition();
+            chessmatch.ValidateOriginPosition(origin);
 
-        Console.WriteLine();
-        Console.Write("Origem: ");
-        Position origem = Window.lerChessPosition().toPosition();
+            bool[,] possiblePositions = chessmatch.Board.piece(origin).PossibleMoves();
 
-        bool[,] posicoesPossiveis = chessmatch.Board.piece(origem).movimentosPossiveis();
+            Console.Clear();
+            Window.PrintBoard(chessmatch.Board, possiblePositions);
 
-        Console.Clear();
-        Window.PrintBoard(chessmatch.Board, posicoesPossiveis);
+            Console.WriteLine();
+            Console.Write("Destiny: ");
+            Position destiny = Window.ReadChessPosition().ToPosition();
+            chessmatch.ValidateDestinyPosition(origin, destiny);
 
-        Console.WriteLine();
-        Console.Write("Destino: ");
-        Position destino = Window.lerChessPosition().toPosition();
-
-        chessmatch.executaMovimento(origem, destino);
-    }
+            chessmatch.MakeMove(origin, destiny);
+        }
+        catch (BoardException e)
+        {
+            Console.WriteLine(e.Message);
+            Console.ReadLine();
+        }
+        }
+    
 
 }
 catch (BoardException e)

@@ -9,7 +9,7 @@
         this.Row = Row;
     }
 
-    public Position toPosition()
+    public Position ToPosition()
     {
         return new Position(8 - Row, Column - 'a');
     }

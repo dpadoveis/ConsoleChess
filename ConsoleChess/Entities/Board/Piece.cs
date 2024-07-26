@@ -20,7 +20,28 @@ abstract class Piece
         Moves++;
     }
 
-    public abstract bool[,] movimentosPossiveis();
+    public bool HavePossibleMovements()
+    {
+        bool[,] array = PossibleMoves();
+        for (int i = 0; i < Board.Rows; i++)
+        {
+            for (int j = 0; j < Board.Columns; j++)
+            {
+                if (array[i,j])
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool CanMoveTo(Position pos) 
+    {
+        return PossibleMoves()[pos.Row, pos.Column];
+    }
+
+    public abstract bool[,] PossibleMoves();
 
 }
 

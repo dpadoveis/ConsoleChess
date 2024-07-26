@@ -19,7 +19,7 @@ class Tower : Piece
             return p == null || p.Color != Color;
         }
 
-        public override bool[,] movimentosPossiveis()
+        public override bool[,] PossibleMoves()
         {
             bool[,] mat = new bool[Board.Rows, Board.Columns];
 

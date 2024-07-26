@@ -11,7 +11,7 @@ class Window
             Console.Write(8 - i + " ");
             for (int j = 0; j < Board.Columns; j++)
             {
-                imprimirPeca(Board.piece(i, j));
+                PrintPiece(Board.piece(i, j));
             }
             Console.WriteLine();
         }
@@ -37,7 +37,7 @@ class Window
                 {
                     Console.BackgroundColor = fundoOriginal;
                 }
-                imprimirPeca(Board.piece(i, j));
+                PrintPiece(Board.piece(i, j));
                 Console.BackgroundColor = fundoOriginal;
             }
             Console.WriteLine();
@@ -46,7 +46,7 @@ class Window
         Console.BackgroundColor = fundoOriginal;
     }
 
-    public static ChessPosition lerChessPosition()
+    public static ChessPosition ReadChessPosition()
     {
         string s = Console.ReadLine();
         char coluna = s[0];
@@ -54,7 +54,7 @@ class Window
         return new ChessPosition(coluna, linha);
     }
 
-    public static void imprimirPeca(Piece peca)
+    public static void PrintPiece(Piece peca)
     {
 
         if (peca == null)
