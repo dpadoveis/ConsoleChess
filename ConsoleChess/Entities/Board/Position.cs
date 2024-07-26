@@ -12,6 +12,12 @@
         Row = row;
         Column = column;
     }
+
+    public void DefineValue(int row, int column)
+    {
+        Row = row;
+        Column = column;
+    }
     public override string ToString()
     {
         return Row

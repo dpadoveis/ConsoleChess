@@ -2,57 +2,68 @@
 {
     public int Rows { get; set; }
     public int Columns { get; set; }
-    public Piece[,] Pieces { get; protected set; }
-
-    public Board() { }
+    private Piece[,] pieces;
 
     public Board(int rows, int columns)
     {
         Rows = rows;
         Columns = columns;
-        Pieces = new Piece[Rows, Columns];
+        pieces = new Piece[Rows, Columns];
     }
-    
-    public bool PieceExists (Position pos)
+
+    public Piece piece(int linha, int coluna)
+    {
+        return pieces[linha, coluna];
+    }
+
+    public Piece piece(Position pos)
+    {
+        return pieces[pos.Row, pos.Column];
+    }
+
+    public bool InsertPiece(Position pos)
     {
         ValidatePosition(pos);
         return piece(pos) != null;
     }
 
-    public void AddPiece(Piece p, Position pos)
+    public void InsertPiece(Piece p, Position pos)
     {
-        if (PieceExists(pos)) 
-            throw new BoardException("Already exists a piece in this position!");
-        Pieces[pos.Row, pos.Column] = p;
+        if (InsertPiece(pos))
+        {
+            throw new BoardException("Já existe uma peça nessa posição!");
+        }
+        pieces[pos.Row, pos.Column] = p;
         p.Position = pos;
     }
 
-    public Piece RemovePiece(Position pos)
+    public Piece retirarPeca(Position pos)
     {
-        if (!PieceExists(pos))
+        if (piece(pos) == null)
         {
             return null;
         }
-        Piece temp = piece(pos);
-        temp.Position = null;
-        Pieces[pos.Row,pos.Column] = null;
-        return temp;
+        Piece aux = piece(pos);
+        aux.Position = null;
+        pieces[pos.Row, pos.Column] = null;
+        return aux;
     }
 
-    private bool ValidPosition(Position pos)
+    public bool ValidPosition(Position pos)
     {
-        if (pos.Row<0 || pos.Row>=Rows || pos.Column<0 || pos.Column>=Columns) return false;
+        if (pos.Row < 0 || pos.Row >= Rows || pos.Column < 0 || pos.Column >= Columns)
+        {
+            return false;
+        }
         return true;
     }
 
     public void ValidatePosition(Position pos)
     {
-        if (!ValidPosition(pos)) 
-            throw new BoardException("Invalid Position!");
+        if (!ValidPosition(pos))
+        {
+            throw new BoardException("Posição inválida!");
+        }
     }
-
-
-    public Piece piece (Position pos) { return Pieces[pos.Row, pos.Column]; }
-
 }
 

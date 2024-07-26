@@ -1,26 +1,33 @@
 ﻿try
 {
-    ChessMatch chessMatch = new ChessMatch();
+    ChessMatch chessmatch = new ChessMatch();
 
-    while (!chessMatch.Finished)
+    while (!chessmatch.terminada)
     {
+
         Console.Clear();
-        Window.PrintBoard(chessMatch.Board);
+        Window.PrintBoard(chessmatch.Board);
 
         Console.WriteLine();
-        Console.Write("Origin:");
-        Position origin = Window.ReadChessPosition()
-            .ToPosition();
-        Console.Write("Destination:");
-        Position destination = Window.ReadChessPosition()
-            .ToPosition();
-        chessMatch.MakeMove(origin, destination);
-    }
+        Console.Write("Origem: ");
+        Position origem = Window.lerChessPosition().toPosition();
 
+        bool[,] posicoesPossiveis = chessmatch.Board.piece(origem).movimentosPossiveis();
+
+        Console.Clear();
+        Window.PrintBoard(chessmatch.Board, posicoesPossiveis);
+
+        Console.WriteLine();
+        Console.Write("Destino: ");
+        Position destino = Window.lerChessPosition().toPosition();
+
+        chessmatch.executaMovimento(origem, destino);
+    }
 
 }
 catch (BoardException e)
 {
     Console.WriteLine(e.Message);
 }
+
 Console.ReadLine();
