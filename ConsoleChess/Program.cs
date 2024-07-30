@@ -6,10 +6,7 @@
     {
         try {
             Console.Clear();
-            Window.PrintBoard(chessmatch.Board);
-            Console.WriteLine();
-            Console.WriteLine("Turn n° " + chessmatch.Turn);
-            Console.WriteLine($"{chessmatch.CurrentPlayer}'s turn to move");
+            Window.PrintMatch(chessmatch);
 
             Console.WriteLine();
             Console.Write("Origin: ");

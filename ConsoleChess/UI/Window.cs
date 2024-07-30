@@ -3,6 +3,36 @@
 class Window
 {
 
+    public static void PrintMatch(ChessMatch chessmatch)
+    {
+        PrintBoard(chessmatch.Board);
+        Console.WriteLine();
+        PrintCapturedPieces(chessmatch);
+        Console.WriteLine();
+        Console.WriteLine("Turn n° " + chessmatch.Turn);
+        Console.WriteLine($"{chessmatch.CurrentPlayer}'s turn to move");
+    }
+
+    public static void PrintCapturedPieces(ChessMatch chessmatch)
+    {
+        Console.WriteLine("Captured Pieces:");
+        Console.Write("White:");
+        PrintSet(chessmatch.CapturedPieces(Color.White));
+        Console.Write("Black:");
+        PrintSet(chessmatch.CapturedPieces(Color.Black));
+    }
+
+    public static void PrintSet(HashSet<Piece> set)
+    {
+        Console.Write("[");
+        foreach( Piece p in set)
+        {
+            Console.Write(p + " ");
+        }
+        Console.Write("]");
+        Console.WriteLine();
+    }
+
     public static void PrintBoard(Board Board)
     {
 
