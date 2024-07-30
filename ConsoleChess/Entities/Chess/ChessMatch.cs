@@ -1,4 +1,5 @@
-﻿using System.Runtime.ConstrainedExecution;
+﻿using System.Reflection.PortableExecutable;
+using System.Runtime.ConstrainedExecution;
 
 class ChessMatch
 {
@@ -8,6 +9,7 @@ class ChessMatch
     public bool Finished { get; private set; }
     private HashSet<Piece> Pieces { get; set; }
     private HashSet<Piece> Captured { get; set; }
+    public bool Check { get; set; }
 
     public ChessMatch()
     {
@@ -15,26 +17,53 @@ class ChessMatch
         Turn = 1;
         CurrentPlayer = Color.White;
         Finished = false;
+        Check = false;
         Pieces = new HashSet<Piece>();
         Captured = new HashSet<Piece>();
         InsertPieces();
     }
 
-    public void ExecuteMove(Position origin, Position destiny)
+    public Piece ExecuteMove(Position origin, Position destiny)
     {
-        Piece p = Board.retirarPeca(origin);
-        p.incrementarQteMovimentos();
-        Piece CapturedPiece = Board.retirarPeca(destiny);
+        Piece p = Board.RemovePiece(origin);
+        p.IncreaseMoves();
+        Piece CapturedPiece = Board.RemovePiece(destiny);
         Board.InsertPiece(p, destiny);
         if (CapturedPiece != null) 
         {
             Captured.Add(CapturedPiece);
         }
+        return CapturedPiece;
+    }
+
+    public void UnMakeMove(Position origin, Position destiny, Piece capturedPiece)
+    {
+        Piece p = Board.RemovePiece(destiny);
+        p.DecreaseMoves();
+        if (capturedPiece != null) 
+        {
+            Board.InsertPiece(capturedPiece, destiny);
+            Captured.Remove(capturedPiece);
+        }
+        Board.InsertPiece(p, origin);
     }
 
     public void MakeMove(Position origin, Position destiny) 
     {
-        ExecuteMove(origin,destiny);
+        Piece capturedPiece = ExecuteMove(origin,destiny);
+        if (IsInCheck(CurrentPlayer))
+        {
+            UnMakeMove(origin,destiny,capturedPiece);
+            throw new BoardException("Can't put yourself in check!");
+        }
+        if (IsInCheck(Opponent(CurrentPlayer)))
+        {
+            Check = true;
+        }
+        else
+        {
+            Check = false;
+        }
         Turn++;
         ChangePlayer();
     }
@@ -95,6 +124,41 @@ class ChessMatch
         }
         aux.ExceptWith(CapturedPieces(color));
         return aux;
+    }
+
+    private Color Opponent(Color color) 
+    {
+        return color == Color.White ? Color.Black : Color.White;
+    }
+
+    private Piece King(Color color) 
+    {
+        foreach (Piece p in InGamePieces(color))
+        {
+            if (p is King)
+            {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public bool IsInCheck(Color color) 
+    {
+        Piece k = King(color);
+        if (k != null)
+        {
+            throw new BoardException("There is not a "+ color + " king in the board!");
+        }
+        foreach (Piece p in InGamePieces(Opponent(color)))
+        {
+            bool[,] array = p.PossibleMoves();
+            if (array[k.Position.Row, k.Position.Column]) 
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -15,11 +15,16 @@ abstract class Piece
         Moves = 0;
     }
 
-    public void incrementarQteMovimentos()
+    public void IncreaseMoves()
     {
         Moves++;
     }
 
+    public void DecreaseMoves()
+    {
+        Moves--; 
+    }
+ 
     public bool HavePossibleMovements()
     {
         bool[,] array = PossibleMoves();

@@ -37,7 +37,7 @@
         p.Position = pos;
     }
 
-    public Piece retirarPeca(Position pos)
+    public Piece RemovePiece(Position pos)
     {
         if (piece(pos) == null)
         {

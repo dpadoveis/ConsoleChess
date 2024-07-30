@@ -23,56 +23,29 @@ class King : Piece
         bool[,] mat = new bool[Board.Rows, Board.Columns];
 
         Position pos = new Position(0, 0);
+        int[,] directions = new int[,]
+        {
+        {-1, 0},  
+        {-1, 1},  
+        {0, 1},   
+        {1, 1},  
+        {1, 0},   
+        {1, -1},  
+        {0, -1},  
+        {-1, -1}  
+        };
 
-        // acima
-        pos.DefineValue(Position.Row - 1, Position.Column);
-        if (Board.ValidPosition(pos) && CanMove(pos))
+        for (int i = 0; i < directions.GetLength(0); i++)
         {
-            mat[pos.Row, pos.Column] = true;
+            pos.DefineValue(Position.Row + directions[i, 0], Position.Column + directions[i, 1]);
+            if (Board.ValidPosition(pos) && CanMove(pos))
+            {
+                mat[pos.Row, pos.Column] = true;
+            }
         }
-        // ne
-        pos.DefineValue(Position.Row - 1, Position.Column + 1);
-        if (Board.ValidPosition(pos) && CanMove(pos))
-        {
-            mat[pos.Row, pos.Column] = true;
-        }
-        // diKingta
-        pos.DefineValue(Position.Row, Position.Column + 1);
-        if (Board.ValidPosition(pos) && CanMove(pos))
-        {
-            mat[pos.Row, pos.Column] = true;
-        }
-        // se
-        pos.DefineValue(Position.Row + 1, Position.Column + 1);
-        if (Board.ValidPosition(pos) && CanMove(pos))
-        {
-            mat[pos.Row, pos.Column] = true;
-        }
-        // abaixo
-        pos.DefineValue(Position.Row + 1, Position.Column);
-        if (Board.ValidPosition(pos) && CanMove(pos))
-        {
-            mat[pos.Row, pos.Column] = true;
-        }
-        // so
-        pos.DefineValue(Position.Row + 1, Position.Column - 1);
-        if (Board.ValidPosition(pos) && CanMove(pos))
-        {
-            mat[pos.Row, pos.Column] = true;
-        }
-        // esquerda
-        pos.DefineValue(Position.Row, Position.Column - 1);
-        if (Board.ValidPosition(pos) && CanMove(pos))
-        {
-            mat[pos.Row, pos.Column] = true;
-        }
-        // no
-        pos.DefineValue(Position.Row - 1, Position.Column - 1);
-        if (Board.ValidPosition(pos) && CanMove(pos))
-        {
-            mat[pos.Row, pos.Column] = true;
-        }
+
         return mat;
+
     }
 }
 
