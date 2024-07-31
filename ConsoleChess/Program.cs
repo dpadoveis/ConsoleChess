@@ -4,7 +4,8 @@
 
     while (!chessmatch.Finished)
     {
-        try {
+        try
+        {
             Console.Clear();
             Window.PrintMatch(chessmatch);
 
@@ -30,8 +31,10 @@
             Console.WriteLine(e.Message);
             Console.ReadLine();
         }
-        }
-    
+    }
+    Console.Clear();
+    Window.PrintMatch(chessmatch);
+
 
 }
 catch (BoardException e)

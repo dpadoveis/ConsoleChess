@@ -31,7 +31,7 @@
     {
         if (InsertPiece(pos))
         {
-            throw new BoardException("Já existe uma peça nessa posição!");
+            throw new BoardException("Already have a piece in this position!");
         }
         pieces[pos.Row, pos.Column] = p;
         p.Position = pos;
@@ -62,7 +62,7 @@
     {
         if (!ValidPosition(pos))
         {
-            throw new BoardException("Posição inválida!");
+            throw new BoardException("Invalid Position!");
         }
     }
 }

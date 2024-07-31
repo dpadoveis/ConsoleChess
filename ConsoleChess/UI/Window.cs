@@ -10,7 +10,19 @@ class Window
         PrintCapturedPieces(chessmatch);
         Console.WriteLine();
         Console.WriteLine("Turn n° " + chessmatch.Turn);
-        Console.WriteLine($"{chessmatch.CurrentPlayer}'s turn to move");
+        if (!chessmatch.Finished)
+        {
+            Console.WriteLine($"{chessmatch.CurrentPlayer}'s turn to move");
+            if (chessmatch.Check)
+            {
+                Console.WriteLine("You are in check!");
+            }
+        }
+        else
+        {
+            Console.WriteLine("CHECKMATE!");
+            Console.WriteLine("Winner: " + chessmatch.CurrentPlayer);
+        }
     }
 
     public static void PrintCapturedPieces(ChessMatch chessmatch)

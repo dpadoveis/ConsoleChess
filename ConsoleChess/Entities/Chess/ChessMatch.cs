@@ -29,7 +29,7 @@ class ChessMatch
         p.IncreaseMoves();
         Piece CapturedPiece = Board.RemovePiece(destiny);
         Board.InsertPiece(p, destiny);
-        if (CapturedPiece != null) 
+        if (CapturedPiece != null)
         {
             Captured.Add(CapturedPiece);
         }
@@ -40,7 +40,7 @@ class ChessMatch
     {
         Piece p = Board.RemovePiece(destiny);
         p.DecreaseMoves();
-        if (capturedPiece != null) 
+        if (capturedPiece != null)
         {
             Board.InsertPiece(capturedPiece, destiny);
             Captured.Remove(capturedPiece);
@@ -48,12 +48,12 @@ class ChessMatch
         Board.InsertPiece(p, origin);
     }
 
-    public void MakeMove(Position origin, Position destiny) 
+    public void MakeMove(Position origin, Position destiny)
     {
-        Piece capturedPiece = ExecuteMove(origin,destiny);
+        Piece capturedPiece = ExecuteMove(origin, destiny);
         if (IsInCheck(CurrentPlayer))
         {
-            UnMakeMove(origin,destiny,capturedPiece);
+            UnMakeMove(origin, destiny, capturedPiece);
             throw new BoardException("Can't put yourself in check!");
         }
         if (IsInCheck(Opponent(CurrentPlayer)))
@@ -64,17 +64,24 @@ class ChessMatch
         {
             Check = false;
         }
-        Turn++;
-        ChangePlayer();
+        if (TestCheckMate(Opponent(CurrentPlayer)))
+        {
+            Finished = true;
+        }
+        else
+        {
+            Turn++;
+            ChangePlayer();
+        }
     }
 
-    public void ValidateOriginPosition(Position pos) 
+    public void ValidateOriginPosition(Position pos)
     {
         if (Board.piece(pos) == null)
         {
             throw new BoardException("The origin don't have an piece! ");
         }
-        if (CurrentPlayer != Board.piece(pos).Color) 
+        if (CurrentPlayer != Board.piece(pos).Color)
         {
             throw new BoardException("The origin you choose is not yours!");
         }
@@ -126,12 +133,12 @@ class ChessMatch
         return aux;
     }
 
-    private Color Opponent(Color color) 
+    private Color Opponent(Color color)
     {
         return color == Color.White ? Color.Black : Color.White;
     }
 
-    private Piece King(Color color) 
+    private Piece King(Color color)
     {
         foreach (Piece p in InGamePieces(color))
         {
@@ -143,17 +150,17 @@ class ChessMatch
         return null;
     }
 
-    public bool IsInCheck(Color color) 
+    public bool IsInCheck(Color color)
     {
         Piece k = King(color);
-        if (k != null)
+        if (k == null)
         {
-            throw new BoardException("There is not a "+ color + " king in the board!");
+            throw new BoardException("There is not a " + color + " king in the board!");
         }
         foreach (Piece p in InGamePieces(Opponent(color)))
         {
             bool[,] array = p.PossibleMoves();
-            if (array[k.Position.Row, k.Position.Column]) 
+            if (array[k.Position.Row, k.Position.Column])
             {
                 return true;
             }
@@ -161,27 +168,62 @@ class ChessMatch
         return false;
     }
 
+    public bool TestCheckMate(Color color)
+    {
+        if (!IsInCheck(color)) return false;
+
+        foreach (Piece p in InGamePieces(color))
+        {
+            bool[,] array = p.PossibleMoves();
+            for (int i = 0; i < Board.Rows; i++)
+            {
+                for (int j = 0; j < Board.Columns; j++)
+                {
+                    if (array[i, j])
+                    {
+                        Position origin = p.Position;
+                        Position destiny = new Position(i, j);
+                        Piece capturedPiece = ExecuteMove(origin, destiny);
+                        bool stillInCheck = IsInCheck(color);
+                        UnMakeMove(origin, destiny, capturedPiece);
+                        if (!stillInCheck)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
 
     public void InsertNewPiece(char column, int row, Piece piece)
     {
-        Board.InsertPiece(piece,new ChessPosition(column, row).ToPosition());
+        Board.InsertPiece(piece, new ChessPosition(column, row).ToPosition());
         Pieces.Add(piece);
     }
     private void InsertPieces()
     {
-        InsertNewPiece('c', 1, new Tower(Board, Color.White));
-        InsertNewPiece('c', 2, new Tower(Board, Color.White));
-        InsertNewPiece('d', 2, new Tower(Board, Color.White));
-        InsertNewPiece('e', 2, new Tower(Board, Color.White));
-        InsertNewPiece('e', 1, new Tower(Board, Color.White));
-        InsertNewPiece('d', 1, new King(Board, Color.White));
+        /* InsertNewPiece('c', 1, new Tower(Board, Color.White));
+         InsertNewPiece('c', 2, new Tower(Board, Color.White));
+         InsertNewPiece('d', 2, new Tower(Board, Color.White));
+         InsertNewPiece('e', 2, new Tower(Board, Color.White));
+         InsertNewPiece('e', 1, new Tower(Board, Color.White));
+         InsertNewPiece('d', 1, new King(Board, Color.White));
 
-        InsertNewPiece('c', 7, new Tower(Board, Color.Black));
-        InsertNewPiece('c', 8, new Tower(Board, Color.Black));
-        InsertNewPiece('d', 7, new Tower(Board, Color.Black));
-        InsertNewPiece('e', 7, new Tower(Board, Color.Black));
-        InsertNewPiece('e', 8, new Tower(Board, Color.Black));
-        InsertNewPiece('d', 8, new King(Board, Color.Black));
+         InsertNewPiece('c', 7, new Tower(Board, Color.Black));
+         InsertNewPiece('c', 8, new Tower(Board, Color.Black));
+         InsertNewPiece('d', 7, new Tower(Board, Color.Black));
+         InsertNewPiece('e', 7, new Tower(Board, Color.Black));
+         InsertNewPiece('e', 8, new Tower(Board, Color.Black));
+         InsertNewPiece('d', 8, new King(Board, Color.Black)); */
+        InsertNewPiece('c', 1, new Tower(Board, Color.White));
+        InsertNewPiece('d', 1, new King(Board, Color.White));
+        InsertNewPiece('h', 7, new Tower(Board, Color.White));
+
+        InsertNewPiece('a', 8, new King(Board, Color.Black));
+        InsertNewPiece('b', 8, new Tower(Board, Color.Black));
 
     }
 }
