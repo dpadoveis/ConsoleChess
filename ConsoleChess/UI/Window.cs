@@ -91,6 +91,10 @@ class Window
     public static ChessPosition ReadChessPosition()
     {
         string s = Console.ReadLine();
+        if (s.Length != 2 || !char.IsLetter(s[0]) || !char.IsDigit(s[1]))
+        {
+            throw new BoardException("Wrong format! Write the letter+number (Ex: d4)");
+        }
         char coluna = s[0];
         int linha = int.Parse(s[1] + "");
         return new ChessPosition(coluna, linha);
@@ -107,7 +111,10 @@ class Window
         {
             if (peca.Color == Color.White)
             {
+                ConsoleColor aux = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(peca);
+                Console.ForegroundColor = aux;
             }
             else
             {

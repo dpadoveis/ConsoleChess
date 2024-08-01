@@ -1,16 +1,16 @@
 ﻿using System.Runtime.ConstrainedExecution;
 
-class Tower : Piece
+class Rook : Piece
 {
     
 
-        public Tower(Board board, Color color) : base(board, color)
+        public Rook(Board board, Color color) : base(board, color)
         {
         }
 
         public override string ToString()
         {
-            return "T";
+            return "R";
         }
 
         private bool CanMove(Position pos)
