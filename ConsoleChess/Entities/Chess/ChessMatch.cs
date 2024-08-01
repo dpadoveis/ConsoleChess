@@ -119,8 +119,8 @@ class ChessMatch
             if (origin.Column != destiny.Column && capturedPiece == EnPassantVulnerable)
             {
                 Piece pawn = Board.RemovePiece(destiny);
-                Position posP = (p.Color == Color.White) ? 
-                    posP = new Position(3, destiny.Column) : 
+                Position posP = (p.Color == Color.White) ?
+                    posP = new Position(3, destiny.Column) :
                     posP = new Position(4, destiny.Column);
                 Board.InsertPiece(pawn, posP);
             }
@@ -135,14 +135,23 @@ class ChessMatch
             UnMakeMove(origin, destiny, capturedPiece);
             throw new BoardException("Can't put yourself in check!");
         }
-        if (IsInCheck(Opponent(CurrentPlayer)))
+
+        Piece p = Board.piece(destiny);
+        //Special moves: Promotion
+        if (p is Pawn)
         {
-            Check = true;
+            if ((p.Color == Color.White && destiny.Row == 0) || (p.Color == Color.Black && destiny.Row == 7))
+            {
+                p = Board.RemovePiece(destiny);
+                Pieces.Remove(p);
+                Piece queen = new Queen(Board, p.Color);
+                Board.InsertPiece(queen,destiny);
+                Pieces.Add(queen);
+            }
         }
-        else
-        {
-            Check = false;
-        }
+
+        Check = IsInCheck(Opponent(CurrentPlayer)) ? true : false;
+
         if (TestCheckMate(Opponent(CurrentPlayer)))
         {
             Finished = true;
@@ -153,9 +162,8 @@ class ChessMatch
             ChangePlayer();
         }
 
-        Piece p = Board.piece(destiny);
         // Special moves: En Passant
-        EnPassantVulnerable = 
+        EnPassantVulnerable =
             (p is Pawn && (destiny.Row == origin.Row - 2 || destiny.Row == origin.Row + 2))
             ? p
             : null;
