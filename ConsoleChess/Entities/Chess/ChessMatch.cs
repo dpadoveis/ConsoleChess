@@ -33,6 +33,25 @@ class ChessMatch
         {
             Captured.Add(CapturedPiece);
         }
+        // Special moves: short castling
+        if (p is King && destiny.Column == origin.Column + 2)
+        {
+            Position originR = new Position(origin.Row, origin.Column + 3);
+            Position destinyR = new Position(origin.Row, destiny.Column + 1);
+            Piece R = Board.RemovePiece(originR);
+            R.IncreaseMoves();
+            Board.InsertPiece(R, destinyR);
+        }
+
+        // Special moves: long castling
+        if (p is King && destiny.Column == origin.Column - 2)
+        {
+            Position originR = new Position(origin.Row, origin.Column - 4);
+            Position destinyR = new Position(origin.Row, destiny.Column - 1);
+            Piece R = Board.RemovePiece(originR);
+            R.IncreaseMoves();
+            Board.InsertPiece(R, destinyR);
+        }
         return CapturedPiece;
     }
 
@@ -46,6 +65,32 @@ class ChessMatch
             Captured.Remove(capturedPiece);
         }
         Board.InsertPiece(p, origin);
+
+        // Special moves: short castling
+        if (p is King && destiny.Column == origin.Column + 2)
+        {
+            Position originR = new Position(origin.Row, origin.Column + 3);
+            Position destinyR = new Position(origin.Row, origin.Column + 1);
+
+            Piece R = Board.RemovePiece(destinyR);
+            R.DecreaseMoves();
+            Board.InsertPiece(R, originR);
+
+            Board.InsertPiece(p, origin);
+        }
+
+        // Special moves: long castling
+        if (p is King && destiny.Column == origin.Column - 2)
+        {
+            Position originR = new Position(origin.Row, origin.Column - 4);
+            Position destinyR = new Position(origin.Row, origin.Column - 1);
+
+            Piece R = Board.RemovePiece(destinyR);
+            R.DecreaseMoves();
+            Board.InsertPiece(R, originR);
+
+            Board.InsertPiece(p, origin);
+        }
     }
 
     public void MakeMove(Position origin, Position destiny)
@@ -205,33 +250,33 @@ class ChessMatch
     }
     private void InsertPieces()
     {
-        
-        InsertNewPiece('a', 1, new Rook(Board, Color.White));    
-        InsertNewPiece('b', 1, new Knight(Board, Color.White));  
-        InsertNewPiece('c', 1, new Bishop(Board, Color.White));  
-        InsertNewPiece('d', 1, new Queen(Board, Color.White));   
-        InsertNewPiece('e', 1, new King(Board, Color.White));    
-        InsertNewPiece('f', 1, new Bishop(Board, Color.White));  
-        InsertNewPiece('g', 1, new Knight(Board, Color.White));  
-        InsertNewPiece('h', 1, new Rook(Board, Color.White));    
 
-        
+        InsertNewPiece('a', 1, new Rook(Board, Color.White));
+        InsertNewPiece('b', 1, new Knight(Board, Color.White));
+        InsertNewPiece('c', 1, new Bishop(Board, Color.White));
+        InsertNewPiece('d', 1, new Queen(Board, Color.White));
+        InsertNewPiece('e', 1, new King(Board, Color.White, this));
+        InsertNewPiece('f', 1, new Bishop(Board, Color.White));
+        InsertNewPiece('g', 1, new Knight(Board, Color.White));
+        InsertNewPiece('h', 1, new Rook(Board, Color.White));
+
+
         for (char file = 'a'; file <= 'h'; file++)
         {
-            InsertNewPiece(file, 2, new Pawn(Board, Color.White));  
+            InsertNewPiece(file, 2, new Pawn(Board, Color.White));
         }
 
-        
-        InsertNewPiece('a', 8, new Rook(Board, Color.Black));    
-        InsertNewPiece('b', 8, new Knight(Board, Color.Black));  
-        InsertNewPiece('c', 8, new Bishop(Board, Color.Black));  
-        InsertNewPiece('d', 8, new Queen(Board, Color.Black));   
-        InsertNewPiece('e', 8, new King(Board, Color.Black));    
-        InsertNewPiece('f', 8, new Bishop(Board, Color.Black));  
-        InsertNewPiece('g', 8, new Knight(Board, Color.Black));  
-        InsertNewPiece('h', 8, new Rook(Board, Color.Black));    
 
-        
+        InsertNewPiece('a', 8, new Rook(Board, Color.Black));
+        InsertNewPiece('b', 8, new Knight(Board, Color.Black));
+        InsertNewPiece('c', 8, new Bishop(Board, Color.Black));
+        InsertNewPiece('d', 8, new Queen(Board, Color.Black));
+        InsertNewPiece('e', 8, new King(Board, Color.Black, this));
+        InsertNewPiece('f', 8, new Bishop(Board, Color.Black));
+        InsertNewPiece('g', 8, new Knight(Board, Color.Black));
+        InsertNewPiece('h', 8, new Rook(Board, Color.Black));
+
+
         for (char file = 'a'; file <= 'h'; file++)
         {
             InsertNewPiece(file, 7, new Pawn(Board, Color.Black));

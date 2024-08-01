@@ -2,14 +2,16 @@
 
 class King : Piece
 {
+    private ChessMatch ChessMatch { get; set; }
 
-    public King(Board Board, Color Color) : base(Board, Color)
+    public King(Board Board, Color Color, ChessMatch chessMatch) : base(Board, Color)
     {
+        ChessMatch = chessMatch;
     }
 
     public override string ToString()
     {
-        return "R";
+        return "K";
     }
 
     private bool CanMove(Position pos)
@@ -17,6 +19,16 @@ class King : Piece
         Piece p = Board.piece(pos);
         return p == null || p.Color != Color;
     }
+
+    private bool CastlingRookTest(Position pos)
+    {
+        Piece p = Board.piece(pos);
+        return p != null &&
+               p is Rook &&
+               p.Color == Color && 
+               p.Moves == 0;
+    }
+
 
     public override bool[,] PossibleMoves()
     {
@@ -44,7 +56,36 @@ class King : Piece
             }
         }
 
-        return mat;
+        // Special moves = Castling
+        if (Moves == 0 && !ChessMatch.Check)
+        {
+            // Short castling
+            Position posT1 = new Position(Position.Row, Position.Column + 3);
+            if (CastlingRookTest(posT1))
+            {
+                Position p1 = new Position(Position.Row, Position.Column + 1);
+                Position p2 = new Position(Position.Row, Position.Column + 2);
+                if (Board.piece(p1) == null && Board.piece(p2) == null)
+                {
+                    mat[Position.Row, Position.Column + 2] = true;
+                }
+            }
+
+            // Long castling
+            Position posT2 = new Position(Position.Row, Position.Column - 4);
+            if (CastlingRookTest(posT2))
+            {
+                Position p1 = new Position(Position.Row, Position.Column - 1);
+                Position p2 = new Position(Position.Row, Position.Column - 2);
+                Position p3 = new Position(Position.Row, Position.Column - 3);
+                if (Board.piece(p1) == null && Board.piece(p2) == null && Board.piece(p3) == null)
+                {
+                    mat[Position.Row, Position.Column - 2] = true;
+                }
+            }
+        }
+
+            return mat;
 
     }
 }
