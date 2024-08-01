@@ -9,7 +9,8 @@ class ChessMatch
     public bool Finished { get; private set; }
     private HashSet<Piece> Pieces { get; set; }
     private HashSet<Piece> Captured { get; set; }
-    public bool Check { get; set; }
+    public bool Check { get; private set; }
+    public Piece EnPassantVulnerable { get; private set; }
 
     public ChessMatch()
     {
@@ -18,6 +19,7 @@ class ChessMatch
         CurrentPlayer = Color.White;
         Finished = false;
         Check = false;
+        EnPassantVulnerable = null;
         Pieces = new HashSet<Piece>();
         Captured = new HashSet<Piece>();
         InsertPieces();
@@ -51,6 +53,25 @@ class ChessMatch
             Piece R = Board.RemovePiece(originR);
             R.IncreaseMoves();
             Board.InsertPiece(R, destinyR);
+        }
+
+        // Special moves: En Passant
+        if (p is Pawn)
+        {
+            if (origin.Column != destiny.Column && CapturedPiece == null)
+            {
+                Position posP;
+                if (p.Color == Color.White)
+                {
+                    posP = new Position(destiny.Row + 1, destiny.Column);
+                }
+                else
+                {
+                    posP = new Position(destiny.Row - 1, destiny.Column);
+                }
+                CapturedPiece = Board.RemovePiece(posP);
+                Captured.Add(CapturedPiece);
+            }
         }
         return CapturedPiece;
     }
@@ -91,6 +112,19 @@ class ChessMatch
 
             Board.InsertPiece(p, origin);
         }
+
+        // Special moves: En Passant
+        if (p is Pawn)
+        {
+            if (origin.Column != destiny.Column && capturedPiece == EnPassantVulnerable)
+            {
+                Piece pawn = Board.RemovePiece(destiny);
+                Position posP = (p.Color == Color.White) ? 
+                    posP = new Position(3, destiny.Column) : 
+                    posP = new Position(4, destiny.Column);
+                Board.InsertPiece(pawn, posP);
+            }
+        }
     }
 
     public void MakeMove(Position origin, Position destiny)
@@ -118,6 +152,14 @@ class ChessMatch
             Turn++;
             ChangePlayer();
         }
+
+        Piece p = Board.piece(destiny);
+        // Special moves: En Passant
+        EnPassantVulnerable = 
+            (p is Pawn && (destiny.Row == origin.Row - 2 || destiny.Row == origin.Row + 2))
+            ? p
+            : null;
+
     }
 
     public void ValidateOriginPosition(Position pos)
@@ -263,7 +305,7 @@ class ChessMatch
 
         for (char file = 'a'; file <= 'h'; file++)
         {
-            InsertNewPiece(file, 2, new Pawn(Board, Color.White));
+            InsertNewPiece(file, 2, new Pawn(Board, Color.White, this));
         }
 
 
@@ -279,7 +321,7 @@ class ChessMatch
 
         for (char file = 'a'; file <= 'h'; file++)
         {
-            InsertNewPiece(file, 7, new Pawn(Board, Color.Black));
+            InsertNewPiece(file, 7, new Pawn(Board, Color.Black, this));
         }
     }
 
